@@ -3,8 +3,8 @@ import { Hono } from 'hono'
 import { handle } from 'hono/aws-lambda'
 import { cors } from 'hono/cors'
 import { swaggerUI } from '@hono/swagger-ui'
-import apiRouter from './routes/api'
 import swaggerJSDoc from 'swagger-jsdoc'
+import apiRouter from './interfaces/routes/api'
 
 // Swagger JSDocの設定
 const swaggerOptions = {
@@ -22,7 +22,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./src/routes/*.ts'], // JSDocコメントを含むファイルのパス
+  apis: ['./src/interfaces/routes/*.ts'], // JSDocコメントを含むファイルのパス
 }
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions)
