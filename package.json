@@ -7,15 +7,20 @@
     "dev:lambda": "NODE_ENV=development serverless offline",
     "build": "hono build",
     "deploy": "serverless deploy",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.6.12",
+    "@vitest/coverage-v8": "^3.1.2",
     "esbuild": "^0.21.4",
+    "happy-dom": "^17.4.4",
     "npm-run-all2": "^6.2.0",
     "serverless": "^4.14.1",
     "serverless-esbuild": "^1.55.0",
-    "serverless-offline": "^14.4.0"
+    "serverless-offline": "^14.4.0",
+    "vitest": "^3.1.2"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.5.1",
