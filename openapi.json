@@ -1,0 +1,208 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Yahoo! NLP API",
+      "description": "Yahoo! JAPANのテキスト解析APIを活用した日本語自然言語処理API",
+      "version": "1.0.0",
+      "contact": {
+        "name": "API Support"
+      }
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "開発サーバー"
+      }
+    ],
+    "tags": [
+      {
+        "name": "形態素解析",
+        "description": "日本語テキストの形態素解析"
+      },
+      {
+        "name": "ふりがな",
+        "description": "漢字にふりがなを付与"
+      }
+    ],
+    "paths": {
+      "/api/morphological": {
+        "post": {
+          "tags": ["形態素解析"],
+          "summary": "テキストの形態素解析を行う",
+          "description": "日本語テキストを形態素（単語）に分割し、品詞情報などを提供します",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["text"],
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "解析する日本語テキスト",
+                      "example": "これは形態素解析のテストです。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "形態素解析結果",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "result": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "surface": {
+                              "type": "string",
+                              "description": "表層形"
+                            },
+                            "pos": {
+                              "type": "string",
+                              "description": "品詞"
+                            },
+                            "reading": {
+                              "type": "string",
+                              "description": "読み"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "無効なリクエスト",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "サーバーエラー",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/furigana": {
+        "post": {
+          "tags": ["ふりがな"],
+          "summary": "漢字にふりがなを付与する",
+          "description": "日本語テキスト中の漢字にふりがなを付与します",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["text"],
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "ふりがなを付与する日本語テキスト",
+                      "example": "漢字にふりがなを振ります。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "ふりがな付与結果",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "result": {
+                        "type": "object",
+                        "properties": {
+                          "word": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "surface": {
+                                  "type": "string",
+                                  "description": "表層形（漢字）"
+                                },
+                                "furigana": {
+                                  "type": "string",
+                                  "description": "ふりがな"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "無効なリクエスト",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "サーバーエラー",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

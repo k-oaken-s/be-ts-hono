@@ -1,0 +1,25 @@
+{
+  "name": "my-app",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev:local",
+    "dev:local": "hono dev",
+    "dev:lambda": "NODE_ENV=development serverless offline",
+    "build": "hono build",
+    "deploy": "serverless deploy",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.12",
+    "esbuild": "^0.21.4",
+    "npm-run-all2": "^6.2.0",
+    "serverless": "^4.14.1",
+    "serverless-esbuild": "^1.55.0",
+    "serverless-offline": "^14.4.0"
+  },
+  "dependencies": {
+    "@hono/swagger-ui": "^0.5.1",
+    "hono": "^4.7.7",
+    "swagger-jsdoc": "^6.2.8"
+  }
+}
