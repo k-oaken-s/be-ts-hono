@@ -6,7 +6,6 @@ import { AddFuriganaUseCase } from '../../application/usecases/AddFuriganaUseCas
 import { GetAnalysisHistoryUseCase } from '../../application/usecases/GetAnalysisHistoryUseCase';
 import { NlpController } from '../../interfaces/controllers/NlpController';
 import { HistoryController } from '../../interfaces/controllers/HistoryController';
-import { UnitOfWork } from '../database/UnitOfWork';
 import { initializeDatabase } from '../database/initialize';
 
 export class Container {
@@ -35,16 +34,13 @@ export class Container {
     // ドメインサービスの登録
     this.services.set('nlpService', new NlpService(this.get('nlpRepository')));
     
-    // Unit of Workの登録
-    this.services.set('unitOfWork', () => new UnitOfWork());
-    
     // ユースケースの登録
     this.services.set('analyzeMorphologyUseCase', new AnalyzeMorphologyUseCase(this.get('nlpService')));
     this.services.set('analyzeMorphologyWithHistoryUseCase', 
-      () => new AnalyzeMorphologyWithHistoryUseCase(this.get('nlpService'), this.get('unitOfWork')()));
+      new AnalyzeMorphologyWithHistoryUseCase(this.get('nlpService')));
     this.services.set('addFuriganaUseCase', new AddFuriganaUseCase(this.get('nlpService')));
     this.services.set('getAnalysisHistoryUseCase', 
-      () => new GetAnalysisHistoryUseCase(this.get('unitOfWork')()));
+      new GetAnalysisHistoryUseCase());
     
     // コントローラーの登録
     this.services.set('nlpController', new NlpController(
@@ -63,12 +59,6 @@ export class Container {
     if (!service) {
       throw new Error(`Service ${serviceName} not found in container`);
     }
-    
-    // ファクトリ関数の場合は実行して新しいインスタンスを返す
-    if (typeof service === 'function') {
-      return service();
-    }
-    
     return service as T;
   }
 }

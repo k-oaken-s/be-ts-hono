@@ -1,5 +1,7 @@
 import { prisma } from './prisma';
 import logger from '../logging/logger';
+import { PrismaTransactionManager } from './PrismaTransactionManager';
+import { setTransactionManager } from '../../common/aop/Transactional';
 
 export const initializeDatabase = async (): Promise<void> => {
   try {
@@ -7,7 +9,10 @@ export const initializeDatabase = async (): Promise<void> => {
     await prisma.$connect();
     logger.info('Database connection initialized');
     
-    // 必要に応じて初期データの投入などを行う
+    // トランザクションマネージャーの設定
+    const transactionManager = new PrismaTransactionManager();
+    setTransactionManager(transactionManager);
+    logger.info('Transaction manager initialized');
     
   } catch (error) {
     logger.error('Failed to initialize database', error);

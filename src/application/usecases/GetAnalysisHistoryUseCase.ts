@@ -1,19 +1,22 @@
-import { IUnitOfWork } from '../../infrastructure/database/UnitOfWork';
 import { AnalysisHistoryRepository } from '../../infrastructure/repositories/AnalysisHistoryRepository';
 import { AnalysisHistoryResponseDto } from '../dtos/AnalysisHistoryResponseDto';
+import { Transactional } from '../../common/aop/Transactional';
 
 export class GetAnalysisHistoryUseCase {
-  private unitOfWork: IUnitOfWork;
+  private historyRepository: AnalysisHistoryRepository;
 
-  constructor(unitOfWork: IUnitOfWork) {
-    this.unitOfWork = unitOfWork;
+  constructor() {
+    this.historyRepository = new AnalysisHistoryRepository();
   }
 
-  async execute(limit: number = 10): Promise<AnalysisHistoryResponseDto> {
+  @Transactional()
+  async execute(
+    tx: any, // 型を抽象化
+    limit: number = 10,
+  ): Promise<AnalysisHistoryResponseDto> {
     try {
-      const historyRepository = new AnalysisHistoryRepository(this.unitOfWork);
-      const histories = await historyRepository.getRecentAnalyses(limit);
-      
+      const histories = await this.historyRepository.getRecentAnalyses(tx, limit);
+
       return {
         count: histories.length,
         histories: histories.map(history => ({
@@ -21,12 +24,12 @@ export class GetAnalysisHistoryUseCase {
           inputText: history.inputText,
           analysisType: history.analysisType,
           result: history.result,
-          createdAt: history.createdAt.toISOString()
-        }))
+          createdAt: history.createdAt.toISOString(),
+        })),
       };
     } catch (error) {
       console.error('履歴取得エラー:', error);
       throw new Error('分析履歴の取得中にエラーが発生しました');
     }
   }
-} 
+}

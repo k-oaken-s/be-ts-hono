@@ -1,17 +1,14 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { IAnalysisHistoryRepository } from '../../domain/repositories/IAnalysisHistoryRepository';
 import { AnalysisHistory, AnalysisType } from '../../domain/models/AnalysisHistory';
-import { IUnitOfWork } from '../database/UnitOfWork';
+import { prisma } from '../database/prisma';
 
 export class AnalysisHistoryRepository implements IAnalysisHistoryRepository {
-  private prisma: PrismaClient | Prisma.TransactionClient;
-
-  constructor(unitOfWork: IUnitOfWork) {
-    this.prisma = unitOfWork.getPrisma();
-  }
-
-  async save(analysisHistory: AnalysisHistory): Promise<AnalysisHistory> {
-    const savedEntity = await this.prisma.analysisHistory.create({
+  async save(
+    client: any = prisma,
+    analysisHistory: AnalysisHistory
+  ): Promise<AnalysisHistory> {
+    const savedEntity = await client.analysisHistory.create({
       data: {
         inputText: analysisHistory.inputText,
         analysisType: analysisHistory.analysisType,
@@ -28,8 +25,11 @@ export class AnalysisHistoryRepository implements IAnalysisHistoryRepository {
     );
   }
 
-  async findById(id: string): Promise<AnalysisHistory | null> {
-    const entity = await this.prisma.analysisHistory.findUnique({
+  async findById(
+    client: any = prisma,
+    id: string
+  ): Promise<AnalysisHistory | null> {
+    const entity = await client.analysisHistory.findUnique({
       where: { id },
     });
     
@@ -46,8 +46,12 @@ export class AnalysisHistoryRepository implements IAnalysisHistoryRepository {
     );
   }
 
-  async findByInputText(text: string, limit: number = 10): Promise<AnalysisHistory[]> {
-    const entities = await this.prisma.analysisHistory.findMany({
+  async findByInputText(
+    client: any = prisma,
+    text: string,
+    limit: number = 10
+  ): Promise<AnalysisHistory[]> {
+    const entities = await client.analysisHistory.findMany({
       where: { inputText: text },
       orderBy: { createdAt: 'desc' },
       take: limit,
@@ -62,8 +66,11 @@ export class AnalysisHistoryRepository implements IAnalysisHistoryRepository {
     ));
   }
 
-  async getRecentAnalyses(limit: number = 10): Promise<AnalysisHistory[]> {
-    const entities = await this.prisma.analysisHistory.findMany({
+  async getRecentAnalyses(
+    client: any = prisma,
+    limit: number = 10
+  ): Promise<AnalysisHistory[]> {
+    const entities = await client.analysisHistory.findMany({
       orderBy: { createdAt: 'desc' },
       take: limit,
     });

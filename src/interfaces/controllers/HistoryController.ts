@@ -2,9 +2,9 @@ import { Context } from 'hono';
 import { GetAnalysisHistoryUseCase } from '../../application/usecases/GetAnalysisHistoryUseCase';
 
 export class HistoryController {
-  private getAnalysisHistoryUseCase: () => GetAnalysisHistoryUseCase;
+  private getAnalysisHistoryUseCase: GetAnalysisHistoryUseCase;
 
-  constructor(getAnalysisHistoryUseCase: () => GetAnalysisHistoryUseCase) {
+  constructor(getAnalysisHistoryUseCase: GetAnalysisHistoryUseCase) {
     this.getAnalysisHistoryUseCase = getAnalysisHistoryUseCase;
   }
 
@@ -12,8 +12,7 @@ export class HistoryController {
     try {
       const limit = c.req.query('limit') ? parseInt(c.req.query('limit')!) : 10;
       
-      const useCase = this.getAnalysisHistoryUseCase();
-      const result = await useCase.execute(limit);
+      const result = await this.getAnalysisHistoryUseCase.execute(null, limit);
       
       return c.json(result);
     } catch (error) {
